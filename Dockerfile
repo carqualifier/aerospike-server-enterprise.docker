@@ -4,6 +4,7 @@
 # http://github.com/aerospike/aerospike-server-enterprise.docker
 #
 
+
 FROM ubuntu:14.04
 
 # Add Aerospike package
@@ -25,6 +26,7 @@ ADD aerospike.conf /etc/aerospike/aerospike.conf
 
 # Mount the Aerospike data directory
 VOLUME ["/opt/aerospike/data"]
+VOLUME ["/opt/aerospike/etc"]
 
 # Expose Aerospike ports
 #
