@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo "create user {{ aerospike_api_client_cqapi_username }} password {{ aerospike_api_client_cqapi_password }} roles data-admin,read-write-udf" >> add_user.txt
+aql -Uadmin -Padmin -f add_user.txt
+rm -rf add_user.txt
+
+ascli -U{{ aerospike_api_client_cqapi_username }} -P{{ aerospike_api_client_cqapi_password }} put cq_api_qualifier cq_tokens {{ api_backend_qualifier_token }}  '{"perms" : [{"res":"user", "perm":"admin,create"}, {"res":"login", "perm":"admin,read,create"}, {"res":"activate", "perm":"admin,create,update"}, {"res":"reset", "perm":"admin,create,update"}, {"res":"subscriber", "perm":"admin,read,create,update,delete"}, {"res":"lead", "perm":"admin,read,create"}, {"res":"loginSocial", "perm":"read,create"}]}'
+ascli -U{{ aerospike_api_client_cqapi_username }} -P{{ aerospike_api_client_cqapi_password }} put cq_api_qualifier cq_keys 1 '{"active": 1, "name": "CARQUALIFIER-API-WEBSITE"}'
+
+&& echo "CREATE INDEX cq_keys_name ON cq_api_qualifier.cq_keys (name) STRING" >> prepare_init.txt \
+&& echo "CREATE INDEX cq_activations_user ON cq_api_qualifier.cq_activations (user) STRING" >> prepare_init.txt
+aql -Uadmin -Padmin -f prepare_init.txt;
+rm -rf prepare_init.txt

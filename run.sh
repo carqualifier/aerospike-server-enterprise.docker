@@ -1,0 +1,6 @@
+#!/bin/bash
+
+INSTANCE_WORKING_DIR="/aerospike/instance"
+INSTANCE_FILE_PATH="${INSTANCE_WORKING_DIR}/${APP_NAME}"
+
+#`$INSTANCE_FILE_NAME`

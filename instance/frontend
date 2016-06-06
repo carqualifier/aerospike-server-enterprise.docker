@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "create user {{ aerospike_app_cq_client_username }} password {{ aerospike_fe_client_cqfe_password }} roles {{ cqfe_roles }}" >> add_user.txt
+aql -Uadmin -Padmin -f add_user.txt
+rm -rf add_user.txt
+
+&& echo "INSERT INTO cqAero.apiKey (PK,name,active) VALUES (1,'CarQualifier',1)" >> prepare_init.txt \
+&& echo "create index stringindex on cqAero.apiKey (name) STRING" >> prepare_init.txt
+/usr/bin/aql -Uadmin -Padmin -f prepare_init.txt;
+rm -rf prepare_init.txt
