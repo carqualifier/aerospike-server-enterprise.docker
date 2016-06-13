@@ -19,10 +19,21 @@ WORKDIR /tmp
 # Install Aerospike
 RUN \
   chmod +x /usr/bin/aerospike \
-  && dpkg -i aerospike-server.deb
+  && dpkg -i aerospike-server.deb \
+  && apt-get update -y \
+  && apt-get install monit -y \
+  && mkdir -p /var/monit/ \
+  && chmod 0700 /etc/monit/monitrc \
+  && apt-get purge -y --auto-remove \
+  && rm -rf aerospike-server.deb
+
+
+COPY monitrc /etc/monit/
+RUN chmod 0700 /etc/monit/monitrc 
 
 # Add the Aerospike configuration
 ADD aerospike.conf /etc/aerospike/aerospike.conf
+ADD aerospike.conf /opt/aerospike/etc/aerospike.conf
 
 # Mount the Aerospike data directory
 VOLUME ["/opt/aerospike/data"]
@@ -40,4 +51,4 @@ EXPOSE 3000 3001 3002 3003 9918
 # Execute the run script
 # We use the `ENTRYPOINT` because it allows us to forward additional
 # arguments to `aerospike`
-ENTRYPOINT ["/usr/bin/aerospike"]
+CMD ["/usr/bin/monit", "-I"]
