@@ -1,15 +1,13 @@
-set daemon 120
-set logfile /var/log/monit.log
+set daemon 60
+set logfile /dev/stdout
 set idfile /var/lib/monit/id
 set statefile /var/lib/monit/state
 set httpd port 2812
   allow localhost
 
 check file aerospike_conf with path /opt/aerospike/etc/aerospike.conf
-  start program = "/etc/init.d/aerospike start"
-  stop program = "/etc/init.d/aerospike stop"
-  if changed checksum then restart
-
-check process aerospike with pidfile /var/run/aerospike/aerospike.pid
-  start program = "/etc/init.d/aerospike start"
-  stop program = "/etc/init.d/aerospike stop"
+  group aerospike
+  start program = "/usr/bin/aerospike start"
+  stop program = "/usr/bin/aerospike stop"
+  restart program = "/usr/bin/aerospike restart"
+  if changed timestamp then restarts

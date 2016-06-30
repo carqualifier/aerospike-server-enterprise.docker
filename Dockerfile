@@ -27,13 +27,15 @@ RUN \
   && apt-get purge -y --auto-remove \
   && rm -rf aerospike-server.deb
 
-
-COPY monitrc /etc/monit/
-RUN chmod 0700 /etc/monit/monitrc 
-
 # Add the Aerospike configuration
 ADD aerospike.conf /etc/aerospike/aerospike.conf
 ADD aerospike.conf /opt/aerospike/etc/aerospike.conf
+
+COPY monitrc /etc/monit/
+RUN chmod 0700 /etc/monit/monitrc \
+    && chmod 0770 /opt/aerospike/etc/aerospike.conf
+
+
 
 # Mount the Aerospike data directory
 VOLUME ["/opt/aerospike/data"]
